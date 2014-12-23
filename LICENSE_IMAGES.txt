@@ -1,0 +1,23 @@
+-----------------------------------------------------------------------------------------------------------
+
+resource/media/next.png
+resource/media/previous.png
+
+By: Noppasorn Rumakhom
+License: Free for commercial use
+Source: https://www.iconfinder.com/iconsets/flat-black
+Edited by: Štěpán Ort
+
+-----------------------------------------------------------------------------------------------------------
+
+icon.png
+resource/media/logo_*.png
+resource/media/fanart/*.jpg
+
+By: Česká Televize
+Source: 
+ * http://www.ceskatelevize.cz/vse-o-ct/press/nova-loga-ct/
+ * http://img.ceskatelevize.cz/loga/apple-touch-icon_2012.png
+ * ftp://www.ceskatelevize.cz/Fotoservis/logo%20CT/nove%20logo%20CT_foto%20Dagmar%20Vyhnalkova.zip
+
+-----------------------------------------------------------------------------------------------------------

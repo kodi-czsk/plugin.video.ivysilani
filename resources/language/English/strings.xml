@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30000">Quality</string>
+	<string id="30001">Started at</string>
+	<string id="30002">No online broadcasting</string>
+	<string id="30003">Related</string>
+	<string id="30004">Episodes</string>
+	<string id="30005">Bonuses</string>
+	<string id="30006">Next</string>
+	<string id="30007">Previous</string>
+	<string id="30008">Automatic quality</string>
+	<string id="30009">Automatic lower quality selection</string>
+	<string id="30010">Media streaming protocol</string>
+	<string id="30011">Audio description</string>
+	<string id="30012">Warning: RTMP may cause audio and video desynchronization after shifting</string>
+	<string id="30013">Select quality</string>
+	<string id="30014">Automatic protocol selection</string>
+	<string id="30015">Live channels</string>
+	<string id="30016">Date</string>
+	<string id="30017">A-Z</string>
+	<string id="30018">Genres</string>
+	<string id="30019">Tips</string>
+	<string id="30020">Top today</string>
+	<string id="30021">Top this week</string>
+	<string id="30022">Don't overlook</string>
+	<string id="30023">Tips from our archive</string>
+	<string id="30024">Other people are watching</string>
+	<string id="30025">Report errors</string>
+	
+	<string id="30500">Error ocurred during runtime.</string>
+	<string id="30501">Allow reporting of errors?</string>
+	<string id="30502">Error was sent to be repaired</string>
+	<string id="30503">Failure report could not be sent</string>
+	
+	<string id="31000">Mon</string>
+	<string id="31001">Tue</string>
+	<string id="31002">Wed</string>
+	<string id="31003">Thu</string>
+	<string id="31004">Fri</string>
+	<string id="31005">Sat</string>
+	<string id="31006">Sun</string>
+</strings>

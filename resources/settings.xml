@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="auto_quality" type="bool" label="30008" default="true" />
+    <setting id="quality" type="labelenum" label="30000" values="144p|288p|404p|576p|720p" default="576p" enable="eq(-1,true)" />
+    <setting id="quality_fallback" type="bool" label="30009" default="true" enable="eq(-2,true)" />
+    <setting id="audio_description" type="bool" label="30011" default="false" enable="eq(-3,true)" />
+    <setting id="player_type" type="labelenum" label="30010" values="HLS|RTSP" defalut="HLS" />
+    <setting label="30012" type="action" enable="eq(-1,1)"/>
+    <setting id="player_fallback" type="bool" label="30014" default="true" enable="eq(-6,true)" />
+    <setting id="send_errors" type="bool" label="30025" default="false" />
+</settings>
