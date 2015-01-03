@@ -462,12 +462,13 @@ try:
                 _setViewMode('Media info 2')
             elif related:
                 listContext("related", related, page)
-                _setViewMode('List')
+                _setViewMode("Media info")
             elif episodes:
                 listContext("episodes", episodes, page)
-                _setViewMode('List')
+                _setViewMode("Media info")
             elif bonuses:
                 listContext("bonuses", bonuses, page)
+                _setViewMode("Media info")
             elif menu:
                 _setViewMode('List')
                 if menu == "live":

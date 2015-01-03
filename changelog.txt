@@ -1,3 +1,5 @@
+2014-01-03 [1.2.1]
+ * Automatic view mode fix 
 2014-01-03 [1.2.0]
  * Episode listing is default for programmes listed by letter or genre (allowes favouriting)
  * Windows path join bugfix
