@@ -26,12 +26,13 @@
 	<string id="30023">Tips from our archive</string>
 	<string id="30024">Other people are watching</string>
 	<string id="30025">Report errors</string>
-	
+	<string id="30026">Automatic view mode</string>
 	<string id="30500">Error ocurred during runtime.</string>
 	<string id="30501">Allow reporting of errors?</string>
 	<string id="30502">Error was sent to be repaired</string>
 	<string id="30503">Failure report could not be sent</string>
-	
+	<string id="30550">License for internet broadcast expired.</string>
+	<string id="30551">Programme is not available.</string>
 	<string id="31000">Mon</string>
 	<string id="31001">Tue</string>
 	<string id="31002">Wed</string>

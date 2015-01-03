@@ -1,3 +1,9 @@
+2014-01-03 [1.2.0]
+ * Episode listing is default for programmes listed by letter or genre (allowes favouriting)
+ * Windows path join bugfix
+ * Thread concurence datetime import bugfix
+ * Translation of well known errors (etc. license expired)
+ * Automatic view mode
 2014-12-22 [1.1.0]
  * Bugfix: listing of letters with diacritic
  * Well known errors

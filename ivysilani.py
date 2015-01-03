@@ -8,12 +8,11 @@ import httplib
 import urllib2
 import urllib
 import xml.etree.ElementTree as ET
-from datetime import datetime
 import time
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __email__ = "stepanort@gmail.com"
 
 # Abstraktní třída pro výpisy
@@ -52,12 +51,12 @@ class Date(_ProgrammeList):
 		date_format = '%Y-%m-%d'
 		date = None
 		try:
-			date = datetime.fromtimestamp(time.mktime(time.strptime(date_text, date_format)))
+			date = time.strptime(date_text, date_format)
 		except ValueError:
 			raise ValueError("Incorrect data format, should be YYYY-MM-DD")
-		min_date = datetime.fromtimestamp(time.mktime(time.strptime(DATE_MIN, date_format)))
+		min_date = time.strptime(DATE_MIN, date_format)
 		if date < min_date:
-			raise ValueError("Must be after "+DATE_MIN)
+			raise ValueError("Must be after " + DATE_MIN)
 		
 	def __init__(self, date, live_channel):
 		self._validate_date(date)
@@ -161,7 +160,7 @@ class _Playable:
 		data = _fetch(PLAYLISTURL_URL, params)
 		playlisturl = ET.fromstring(data)
 		data = urllib2.urlopen(playlisturl.text).read()
-		root =  ET.fromstring(data)
+		root = ET.fromstring(data)
 		switchItem = root.find("smilRoot/body/switchItem")
 		videos = switchItem.findall("video")
 		for video in videos:
@@ -173,7 +172,7 @@ class _Playable:
 			hls_quality = Quality(label, "iPad")
 			self.url(hls_quality)
 		qualities = self._links().keys()
-		return sorted(qualities,  key=lambda quality: quality.height + (0.5 if quality.playerType == "iPad" else 0), reverse=True)
+		return sorted(qualities, key=lambda quality: quality.height + (0.5 if quality.playerType == "iPad" else 0), reverse=True)
 	
 	def _links(self):
 		try:
@@ -203,7 +202,7 @@ class _Playable:
 			return None
 		root = ET.fromstring(data)
 		if root.tag == "errors":
-			raise Exception(', '.join([e.text for e in root])) 
+			raise Exception(', '.join([e.text for e in root]))
 		playlist_url = root.text
 		playlist_data = urllib2.urlopen(playlist_url).read()
 		root = ET.fromstring(playlist_data)
@@ -259,7 +258,7 @@ class LiveChannel(_Playable):
 class Programme(_Playable):
 	
 
-	def __init__(self, ID = None):
+	def __init__(self, ID=None):
 		if ID is None:
 			return
 		params = { "imageType": IMAGE_WIDTH,
@@ -269,7 +268,7 @@ class Programme(_Playable):
 			return None
 		root = ET.fromstring(data)
 		if root.tag == "errors":
-			raise Exception(', '.join([e.text for e in root])) 
+			raise Exception(', '.join([e.text for e in root]))
 		programme = root
 		for child in programme:
 			setattr(self, child.tag, child.text)
@@ -278,8 +277,8 @@ class Programme(_Playable):
 		if page_size is None:
 			page_size = PAGE_SIZE
 		params = { "ID": self.ID,
-				   "paging["+ name +"][currentPage]": current_page,
-				   "paging["+ name +"][pageSize]": page_size,
+				   "paging[" + name + "][currentPage]": current_page,
+				   "paging[" + name + "][pageSize]": page_size,
 				   "imageType": IMAGE_WIDTH,
 				   "type[0]": name }
 		data = _fetch(PROGRAMMELIST_URL, params)
@@ -287,9 +286,9 @@ class Programme(_Playable):
 			return None
 		root = ET.fromstring(data)
 		if root.tag == "errors":
-			raise Exception(', '.join([e.text for e in root])) 
+			raise Exception(', '.join([e.text for e in root]))
 		output = []
-		for item in root.findall( name + "/programme"):
+		for item in root.findall(name + "/programme"):
 			programme = Programme()
 			for child in item:
 				setattr(programme, child.tag, child.text)
@@ -309,13 +308,13 @@ class Programme(_Playable):
 ## --- privátní metody - začátek --- ###
 
 def _toString(text):
-	if type(text).__name__=='unicode':
+	if type(text).__name__ == 'unicode':
 		output = text.encode('utf-8')
 	else:
 		output = str(text)
 	return output
 
-def _https_ceska_televize_fetch( url, params):
+def _https_ceska_televize_fetch(url, params):
 	headers = { "Content-type": "application/x-www-form-urlencoded",
 				"Accept-encoding": "gzip",
 				"Connection": "Keep-Alive",
@@ -347,7 +346,7 @@ def _fetch(url, params):
 			_token_refresh()
 			data = _https_ceska_televize_fetch(url, params)
 		else:
-			raise Exception(', '.join([e.text for e in root])) 
+			raise Exception(', '.join([e.text for e in root]))
 	return data
 
 def _fetch_list(url, output, cls):
@@ -386,17 +385,17 @@ GENRELIST_URL = "/services/ivysilani/xml/genrelist/"
 PLAYLISTURL_URL = "/services/ivysilani/xml/playlisturl/"
 ALPHABETLIST_URL = "/services/ivysilani/xml/alphabetlist/"
 
-IMAGE_WIDTH = 400 #doporučeno na TheTvDB Wiki
+IMAGE_WIDTH = 400  # doporučeno na TheTvDB Wiki
 PLAYER_TYPES = ["iPad", "rtsp", "flash"]
 PLAYER_TYPE = "iPad"
 
 # Audio Descrition není dostupné pomoci HLS (playerType=iPad)
-QUALITIES = ["AD", "mobile", "web", "144p", "288p", "404p", "576p", "720p"] #mobile=288p web=576p
+QUALITIES = ["AD", "mobile", "web", "144p", "288p", "404p", "576p", "720p"]  # mobile=288p web=576p
 
 
 PAGE_SIZE = 25
 
-#Živě
+# Živě
 LIVE_CHANNELS = [ LiveChannel(1, "CT1", "ČT1"),
 				  LiveChannel(2, "CT2", "ČT2"),
 				  LiveChannel(24, "CT24", "ČT24"),
@@ -404,10 +403,10 @@ LIVE_CHANNELS = [ LiveChannel(1, "CT1", "ČT1"),
 				  LiveChannel(5, "CT5", "ČT :D"),
 				  LiveChannel(6, "CT6", "ČT art") ]
 
-#Výběry
-SPOTLIGHTS = [ Spotlight("tipsMain",  "Tipy"),
+# Výběry
+SPOTLIGHTS = [ Spotlight("tipsMain", "Tipy"),
 			   Spotlight("topDay", "Nejsledovanější dne"),
-			   Spotlight("topWeek", "Nejsledovanější týdne" ),
+			   Spotlight("topWeek", "Nejsledovanější týdne"),
 			   Spotlight("tipsNote", "Nepřehlédněte"),
 			   Spotlight("tipsArchive", "Z našeho archivu"),
 			   Spotlight("watching", "Ostatní právě sledují")]

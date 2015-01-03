@@ -26,12 +26,13 @@
 	<string id="30023">Z našeho archivu</string>
 	<string id="30024">Ostatní právě sledují</string>
 	<string id="30025">Odesílat chyby</string>
-
+	<string id="30026">Automaticky přizpůsobovat zobrazení</string>
 	<string id="30500">Nastala chyba při běhu aplikace.</string>
 	<string id="30501">Povolit odesílní chyb doplňku?</string>
 	<string id="30502">Chyba byla odeslána k opravě</string>
 	<string id="30503">Report o chybě se nepodařilo odeslat</string>
-		
+	<string id="30550">Licence pro internetové vysílání již skončila.</string>
+	<string id="30551">Pořad není v iVysílání k dispozici.</string>
 	<string id="31000">Po</string>
 	<string id="31001">Út</string>
 	<string id="31002">St</string>
