@@ -7,6 +7,6 @@
     <setting id="player_type" type="labelenum" label="30010" values="HLS|RTSP" defalut="HLS" />
     <setting label="30012" type="action" enable="eq(-1,1)"/>
     <setting id="player_fallback" type="bool" label="30014" default="true" enable="eq(-6,true)" />
-    <setting id="auto_view_mode" type="bool" label="30026" default="false" />
+    <setting id="auto_view_mode" type="bool" label="30026" default="true" />
     <setting id="send_errors" type="bool" label="30025" default="false" />
 </settings>
