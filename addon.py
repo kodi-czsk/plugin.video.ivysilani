@@ -281,9 +281,6 @@ try:
         image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'logo_' + playable.ID.lower() + '_400x225.png'))
         if isinstance(playable, ivysilani.Programme):
             image = playable.imageURL
-            if not playable.playable:
-                listContext("bonuses", playable.ID, 1)
-                return
         if _auto_quality_ and not skipAutoQuality:
             url = autoSelectQuality(playable)
             if url:
