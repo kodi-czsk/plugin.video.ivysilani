@@ -9,4 +9,5 @@
     <setting id="player_fallback" type="bool" label="30014" default="true" enable="eq(-6,true)" />
     <setting id="auto_view_mode" type="bool" label="30026" default="true" />
     <setting id="send_errors" type="bool" label="30025" default="false" />
+    <setting id="auto_unpause" type="bool" label="30027" default="false" />
 </settings>

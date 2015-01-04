@@ -27,6 +27,7 @@
 	<string id="30024">Other people are watching</string>
 	<string id="30025">Report errors</string>
 	<string id="30026">Automatic view mode</string>
+	<string id="30027">Automatic unpause (experimental bugfix for Helix)</string>
 	<string id="30500">Error ocurred during runtime.</string>
 	<string id="30501">Allow reporting of errors?</string>
 	<string id="30502">Error was sent to be repaired</string>

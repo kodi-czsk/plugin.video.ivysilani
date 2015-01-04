@@ -9,6 +9,7 @@ import urllib2
 import urllib
 import xml.etree.ElementTree as ET
 import time
+import json
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
@@ -148,31 +149,31 @@ class Quality():
 	def _properPlayerType(self, playerType):
 		if playerType == "flash":
 			return "rtsp"
+		if playerType.lower() == "iPad".lower():
+			return "iPad"
 		return playerType
 
 # Abstraktní třída zprostředkovává přístup ke kvalitě a odkazu na video
 class _Playable:
 	
 	def available_qualities(self):
-		params = { "playerType": "flash",
-			   "quality": "web",
-			   "ID": self.ID }
-		data = _fetch(PLAYLISTURL_URL, params)
-		playlisturl = ET.fromstring(data)
-		data = urllib2.urlopen(playlisturl.text).read()
-		root = ET.fromstring(data)
-		switchItem = root.find("smilRoot/body/switchItem")
-		videos = switchItem.findall("video")
-		for video in videos:
-			label = video.get("label")
-			quality = Quality(label, "flash")
-			if quality not in self._links():
-				url = switchItem.get("base") + "/" + video.get("src")
-				self._links()[quality] = url
-			hls_quality = Quality(label, "iPad")
-			self.url(hls_quality)
+		for player_type in PLAYER_TYPES:
+			for quality_label in QUALITIES:
+				try:
+					quality = Quality(quality_label, player_type)
+					url = self.url(quality)
+					import urlparse
+					par = urlparse.parse_qs(urlparse.urlparse(url).query)
+					playerType = _toString(par['playerType'][0])
+					label = _toString(par['quality'][0])
+					quality = Quality(label, playerType)
+					if quality not in self._links(): 
+						self._links()[quality] = url
+				except:
+					pass
 		qualities = self._links().keys()
-		return sorted(qualities, key=lambda quality: quality.height + (0.5 if quality.playerType == "iPad" else 0), reverse=True)
+		sorted_qualities = sorted(qualities, key=lambda quality: quality.height + (0.5 if quality.playerType == "iPad" else 0), reverse=True)
+		return sorted_qualities
 	
 	def _links(self):
 		try:
@@ -204,7 +205,12 @@ class _Playable:
 		if root.tag == "errors":
 			raise Exception(', '.join([e.text for e in root]))
 		playlist_url = root.text
-		playlist_data = urllib2.urlopen(playlist_url).read()
+		resp = urllib2.urlopen(playlist_url)
+		playlist_data = resp.read()
+		if resp.info().gettype() == 'application/json':
+			json_body = json.loads(playlist_data)
+			url = json_body['playlist'][0]['streamUrls']['main']
+			return url
 		root = ET.fromstring(playlist_data)
 		videos = root.findall("smilRoot/body//video")
 		for video in videos:
@@ -219,7 +225,7 @@ class _Playable:
 		if quality.playerType == "iPad":
 			try:
 				if urllib2.urlopen(url).getcode() == 200:
-						self._links()[quality] = url
+					self._links()[quality] = url
 			except urllib2.HTTPError:
 				return None
 		return url

@@ -76,7 +76,8 @@ try:
                                   "player_type" : "HLS",
                                   "audio_description" : "false",
                                   "auto_view_mode" : "true",
-                                  "send_errors" : "false"}
+                                  "send_errors" : "false",
+                                  "auto_unpause" : "false"}
         for setting in DEFAULT_SETTING_VALUES.keys():
             val = _addon_.getSetting(setting)
             if not val:
@@ -92,6 +93,7 @@ try:
     _first_error_ = (_addon_.getSetting('first_error') == "true")
     _send_errors_ = (_addon_.getSetting('send_errors') == "true")
     _auto_view_mode_ = (_addon_.getSetting('auto_view_mode') == "true")
+    _auto_unpause_ = (_addon_.getSetting('auto_unpause') == "true")
     _icon_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'icon.png'))
     _next_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'next.png'))
     _previous_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'previous.png'))
@@ -272,10 +274,47 @@ try:
     def playUrl(title, url, image):
         li = xbmcgui.ListItem(title)
         li.setThumbnailImage(image)
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
-        playlist.add(url, li)
-        xbmc.Player().play(playlist)
+        if _auto_unpause_:
+            import threading
+            t = threading.Thread(target=playAsync, args=(xbmc, xbmc.Player()))
+            t.start()
+            xbmc.sleep(100)
+        xbmc.Player().play(url, li)
+
+    def playAsync(x, p):
+        player = AutoUnpausePlayer()
+        while not player.isPlaying():
+            x.sleep(10)
+        xbmc.abortRequested = True
+        logErr("started")
+        while player.isPlaying():
+            xbmc.sleep(10)
+        logErr("stopped")
+        del player
+    
+    class AutoUnpausePlayer (xbmc.Player):
+      
+        def __init__(self, *args, **kwargs):
+            xbmc.Player.__init__(self)
+        
+        def onPlayBackStarted(self):
+            while not xbmc.Player().isPlaying():
+                xbmc.sleep(10)
+            xbmc.sleep(1000)
+            self._temp_pause = True        
+            xbmc.Player().pause()
+            logErr("autostart")
+              
+        def onPlayBackPaused(self):
+            if self._temp_pause:
+                xbmc.Player().play()
+            self._temp_pause = False
+        
+        def onPlayBackSeek(self, time, seekOffset):
+            xbmc.sleep(1000)
+            self._temp_pause = True
+            xbmc.Player().pause()
+            logErr("seek")
 
     def playPlayable(playable, skipAutoQuality=False):
         image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'logo_' + playable.ID.lower() + '_400x225.png'))

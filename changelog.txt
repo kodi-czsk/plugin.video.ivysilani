@@ -1,10 +1,14 @@
-2014-01-03 [1.2.3]
+2015-01-04 [1.2.4]
+ * Player overridden to unpause on start and seek (experimental)
+ * JSON playlist parsing bugfix
+ * Available qualities revised (slower but working)
+2015-01-03 [1.2.3]
  * Auto view mode default fix
-2014-01-03 [1.2.2]
+2015-01-03 [1.2.2]
  * Bugfix
-2014-01-03 [1.2.1]
+2015-01-03 [1.2.1]
  * Automatic view mode fix 
-2014-01-03 [1.2.0]
+2015-01-03 [1.2.0]
  * Episode listing is default for programmes listed by letter or genre (allowes favouriting)
  * Windows path join bugfix
  * Thread concurence datetime import bugfix
