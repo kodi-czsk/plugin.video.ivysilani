@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import time
 import random
 from xbmcplugin import addDirectoryItem
-
+from collections import defaultdict
 ###############################################################################
 REMOTE_DBG = False
 # append pydev remote debugger
@@ -106,7 +106,7 @@ try:
                                  ('Playlisturl is empty!', 30550),
                                  ('Non playable programme!', 30550),
                                  ('error_nonEncoded', 30551)]
-    SKIN_DATA = {
+    SKIN_DATA = defaultdict(list, {
         'skin.confluence': [
             {'name': 'List', 'id': 50},
             {'name': 'Big List', 'id': 51},
@@ -114,7 +114,7 @@ try:
             {'name': 'Media info', 'id': 504},
             {'name': 'Media info 2', 'id': 503}
         ]
-    }
+    })
 
     def _toString(text):
         if type(text).__name__ == 'unicode':
