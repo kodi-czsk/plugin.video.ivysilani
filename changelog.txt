@@ -1,3 +1,5 @@
+2015-01.10 [1.2.5]
+ * Unsupported skin bugfix by Libor Zoubek. Thx
 2015-01-04 [1.2.4]
  * Player overridden to unpause on start and seek (experimental)
  * JSON playlist parsing bugfix
