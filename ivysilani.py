@@ -348,7 +348,7 @@ def _fetch(url, params):
 	data = _https_ceska_televize_fetch(url, params)
 	root = ET.fromstring(data)
 	if root.tag == "errors":
-		if root[0].text == "no _token sent" or root[0].text == "wrong _token":
+		if root[0].text == "no token sent" or root[0].text == "wrong token":
 			_token_refresh()
 			data = _https_ceska_televize_fetch(url, params)
 		else:
