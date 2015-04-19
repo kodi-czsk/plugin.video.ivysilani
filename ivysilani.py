@@ -13,7 +13,7 @@ import json
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 __email__ = "stepanort@gmail.com"
 
 # Abstraktní třída pro výpisy
@@ -91,48 +91,28 @@ class Genre(_ProgrammeList):
 
 class Quality():
 	
-	def __init__(self, quality, playerType=None):
-		if not playerType:
-			parts = quality.split('_')
-			playerType = parts[0]
-			quality = parts[1]
+	def __init__(self, quality):
 		self.height = self._height(quality)
-		self.playerType = self._properPlayerType(playerType)
-		self.ad = False
-		if quality == "AD":
-			self.ad = True
+		self.playerType = "iPad"
 
 	def _height(self, quality):
 		if quality == "web":
 			return 576
 		if quality == "mobile":
-			return 288
+			return 144
 		if quality == "AD":
 			return -1
 		return int(quality[0:-1])
 	
 	def quality(self):
-		if self.ad:
-			return "AD"
-		if self.playerType == "iPad":
-			if self.height == 576:
-				return "web"
-			if self.height == 288:
-				return "mobile"
+		if self.height == 576:
+			return "web"
+		if self.height == 144:
+			return "mobile"
 		return str(self.height) + "p"
 
 	def label(self):
-		out = ""
-		if self.playerType == "iPad":
-			out += "HLS"
-		else:
-			out += "RTSP"
-		out += ": "
-		if self.ad:
-			out += "AD"
-		else:
-			out += str(self.height) + "p"
-		return out
+		return str(self.height) + "p"
 	
 	def __eq__(self, obj):
 		return isinstance(obj, Quality) and obj.__str__() == self.__str__()
@@ -144,35 +124,26 @@ class Quality():
 		return self.__str__()
 			
 	def __str__(self):
-		return self.playerType + "_" + self.quality()
-	
-	def _properPlayerType(self, playerType):
-		if playerType == "flash":
-			return "rtsp"
-		if playerType.lower() == "iPad".lower():
-			return "iPad"
-		return playerType
+		return self.quality()
 
 # Abstraktní třída zprostředkovává přístup ke kvalitě a odkazu na video
 class _Playable:
 	
 	def available_qualities(self):
-		for player_type in PLAYER_TYPES:
-			for quality_label in QUALITIES:
-				try:
-					quality = Quality(quality_label, player_type)
-					url = self.url(quality)
-					import urlparse
-					par = urlparse.parse_qs(urlparse.urlparse(url).query)
-					playerType = _toString(par['playerType'][0])
-					label = _toString(par['quality'][0])
-					quality = Quality(label, playerType)
-					if quality not in self._links(): 
-						self._links()[quality] = url
-				except:
-					pass
+		for quality_label in QUALITIES:
+			try:
+				quality = Quality(quality_label)
+				url = self.url(quality)
+				import urlparse
+				par = urlparse.parse_qs(urlparse.urlparse(url).query)
+				label = _toString(par['quality'][0])
+				quality = Quality(label)
+				if quality not in self._links(): 
+					self._links()[quality] = url
+			except:
+				pass
 		qualities = self._links().keys()
-		sorted_qualities = sorted(qualities, key=lambda quality: quality.height + (0.5 if quality.playerType == "iPad" else 0), reverse=True)
+		sorted_qualities = sorted(qualities, key=lambda quality: quality.height, reverse=True)
 		return sorted_qualities
 	
 	def _links(self):
@@ -190,12 +161,8 @@ class _Playable:
 			url = self._links()[quality]
 			return url
 		params = { "ID": self.ID,
-				   "playerType": quality.playerType }
-		if quality.playerType == "rtsp":
-			params["playerType"] = "flash"
-			params["quality"] = "web"
-		else:
-			params["quality"] = quality.quality()
+				   "playerType": "iPad",
+				   "quality": quality.quality() }
 		data = None
 		try:
 			data = _fetch(PLAYLISTURL_URL, params)
@@ -207,27 +174,21 @@ class _Playable:
 		playlist_url = root.text
 		resp = urllib2.urlopen(playlist_url)
 		playlist_data = resp.read()
-		if resp.info().gettype() == 'application/json':
-			json_body = json.loads(playlist_data)
-			url = json_body['playlist'][0]['streamUrls']['main']
-			return url
 		root = ET.fromstring(playlist_data)
 		videos = root.findall("smilRoot/body//video")
 		for video in videos:
 			if 'label' not in video.attrib or video.get("label") == quality.quality():
 				url = video.get("src")
-				break
 		if not url:
 			return None
 		switchItem = root.find("smilRoot/body/switchItem")
 		if switchItem:
 			url = switchItem.get("base") + "/" + url
-		if quality.playerType == "iPad":
-			try:
-				if urllib2.urlopen(url).getcode() == 200:
-					self._links()[quality] = url
-			except urllib2.HTTPError:
-				return None
+		try:
+			if urllib2.urlopen(url).getcode() == 200:
+				self._links()[quality] = url
+		except urllib2.HTTPError:
+			return None
 		return url
 
 # Kanál
@@ -346,7 +307,10 @@ def _fetch(url, params):
 		_token_refresh()
 	params["token"] = _token
 	data = _https_ceska_televize_fetch(url, params)
-	root = ET.fromstring(data)
+	try:
+		root = ET.fromstring(data)
+	except:
+		return None
 	if root.tag == "errors":
 		if root[0].text == "no token sent" or root[0].text == "wrong token":
 			_token_refresh()
@@ -392,12 +356,8 @@ PLAYLISTURL_URL = "/services/ivysilani/xml/playlisturl/"
 ALPHABETLIST_URL = "/services/ivysilani/xml/alphabetlist/"
 
 IMAGE_WIDTH = 400  # doporučeno na TheTvDB Wiki
-PLAYER_TYPES = ["iPad", "rtsp", "flash"]
-PLAYER_TYPE = "iPad"
 
-# Audio Descrition není dostupné pomoci HLS (playerType=iPad)
-QUALITIES = ["AD", "mobile", "web", "144p", "288p", "404p", "576p", "720p"]  # mobile=288p web=576p
-
+QUALITIES = ["mobile", "288p", "404p", "web", "720p"]
 
 PAGE_SIZE = 25
 

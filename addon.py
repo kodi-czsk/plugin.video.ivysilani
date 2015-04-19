@@ -21,7 +21,8 @@ REMOTE_DBG = False
 # append pydev remote debugger
 if REMOTE_DBG:
     try:
-        sys.path.append(os.environ['HOME'] + r'/.kodi/system/python/Lib/pysrc')
+        #sys.path.append(os.environ['HOME'] + r'/.kodi/system/python/Lib/pysrc') # Linux
+        sys.path.append("C:\\eclipse\\plugins\\org.python.pydev_4.0.0.201504132356\\pysrc") # Windows
         import pydevd
         pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True)
     except ImportError:
@@ -72,12 +73,8 @@ try:
         DEFAULT_SETTING_VALUES = {"quality" : "576p",
                                   "auto_quality" : "true",
                                   "quality_fallback" : "true",
-                                  "player_fallback" : "true",
-                                  "player_type" : "HLS",
-                                  "audio_description" : "false",
                                   "auto_view_mode" : "true",
-                                  "send_errors" : "false",
-                                  "auto_unpause" : "false"}
+                                  "send_errors" : "false"}
         for setting in DEFAULT_SETTING_VALUES.keys():
             val = _addon_.getSetting(setting)
             if not val:
@@ -87,13 +84,9 @@ try:
     _auto_quality_ = (_addon_.getSetting('auto_quality') == "true")
     _quality_ = _addon_.getSetting('quality')
     _quality_fallback_ = (_addon_.getSetting('quality_fallback') == "true")
-    _player_fallback_ = (_addon_.getSetting('player_fallback') == "true")
-    _audio_description_ = (_addon_.getSetting('audio_description') == "true")
-    _player_type_ = _addon_.getSetting('player_type')
     _first_error_ = (_addon_.getSetting('first_error') == "true")
     _send_errors_ = (_addon_.getSetting('send_errors') == "true")
     _auto_view_mode_ = (_addon_.getSetting('auto_view_mode') == "true")
-    _auto_unpause_ = (_addon_.getSetting('auto_unpause') == "true")
     _icon_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'icon.png'))
     _next_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'next.png'))
     _previous_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'previous.png'))
@@ -217,30 +210,18 @@ try:
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
     def autoSelectQuality(playable):
-        player_type = _player_type_.lower()
-        if player_type == "hls":
-            player_type = "iPad"
-        setting_quality = ivysilani.Quality(_quality_, player_type)
-        setting_quality.ad = _audio_description_
+        setting_quality = ivysilani.Quality(_quality_)
         url = playable.url(setting_quality)
         if url or not _quality_fallback_:
             return url
         all_qualities = [ "720p", "576p", "404p", "288p", "144p" ]
         for q in all_qualities:
-            quality = ivysilani.Quality(q, player_type)
+            quality = ivysilani.Quality(q)
             if  setting_quality.height < quality.height:
                 continue
             url = playable.url(quality)
-            if url and quality.ad == setting_quality.ad:
+            if url:
                 return url
-            else:
-                if _player_fallback_:
-                    all_players = [ "iPad", "rtsp"]
-                    for p in all_players:
-                        quality = ivysilani.Quality(q, p)
-                        url = playable.url(quality)
-                        if url and quality.ad == setting_quality.ad:
-                            return url
         return None
 
     def listLiveChannels():
@@ -274,61 +255,28 @@ try:
     def playUrl(title, url, image):
         li = xbmcgui.ListItem(title)
         li.setThumbnailImage(image)
-        if _auto_unpause_:
-            import threading
-            t = threading.Thread(target=playAsync, args=(xbmc, xbmc.Player()))
-            t.start()
-            xbmc.sleep(100)
-        xbmc.Player().play(url, li)
+        playlist_file_path = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('profile'), "playlist.m3u8"))
+        urllib.urlretrieve(url, playlist_file_path)
+        xbmc.Player().play(playlist_file_path, li)
 
-    def playAsync(x, p):
-        player = AutoUnpausePlayer()
-        while not player.isPlaying():
-            x.sleep(10)
-        xbmc.abortRequested = True
-        logErr("started")
-        while player.isPlaying():
-            xbmc.sleep(10)
-        logErr("stopped")
-        del player
-    
-    class AutoUnpausePlayer (xbmc.Player):
-      
-        def __init__(self, *args, **kwargs):
-            xbmc.Player.__init__(self)
-        
-        def onPlayBackStarted(self):
-            while not xbmc.Player().isPlaying():
-                xbmc.sleep(10)
-            xbmc.sleep(1000)
-            self._temp_pause = True        
-            xbmc.Player().pause()
-            logErr("autostart")
-              
-        def onPlayBackPaused(self):
-            if self._temp_pause:
-                xbmc.Player().play()
-            self._temp_pause = False
-        
-        def onPlayBackSeek(self, time, seekOffset):
-            xbmc.sleep(1000)
-            self._temp_pause = True
-            xbmc.Player().pause()
-            logErr("seek")
-
-    def playPlayable(playable, skipAutoQuality=False):
+    def playPlayable(playable, skipAutoQuality=False, forceQuality=None):
         image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'logo_' + playable.ID.lower() + '_400x225.png'))
         if isinstance(playable, ivysilani.Programme):
             image = playable.imageURL
-        if _auto_quality_ and not skipAutoQuality:
+        if _auto_quality_ and not skipAutoQuality and not forceQuality:
             url = autoSelectQuality(playable)
+            if url:
+                playUrl(playable.title, url, image)
+                return
+        if forceQuality:
+            quality = ivysilani.Quality(forceQuality)
+            url = playable.url(quality)
             if url:
                 playUrl(playable.title, url, image)
                 return
         qualities = playable.available_qualities()
         for quality in qualities:
-            url = playable.url(quality)
-            addDirectoryItem(quality.label(), url=url, title=_toString(playable.title), image=image, isFolder=False)
+            addDirectoryItem(quality.label(), url=_baseurl_ + "?force_quality=" + str(quality) + "&play=" + playable.ID, title=_toString(playable.title), image=image, isFolder=False)
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
     def playLiveChannel(liveChannel, skipAutoQuality=False):
@@ -465,6 +413,7 @@ try:
     episodes = None
     bonuses = None
     skip_auto = None
+    force_quality = None
     page = 1
     params = get_params()
     assign_params(params)
@@ -476,7 +425,7 @@ try:
             playable = selectLiveChannel(play)
             if not playable:
                 playable = ivysilani.Programme(play)
-            playPlayable(playable, skip_auto)
+            playPlayable(playable, skip_auto, force_quality)
         elif genre:
             for g in ivysilani.genres():
                 if g.link == genre:
