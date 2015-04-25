@@ -238,7 +238,7 @@ try:
                 plot += " (" + _toString(live_programme.elapsedPercentage) + "%)"
             if hasattr(live_programme, "synopsis") and live_programme.synopsis:
                 plot += "\n\n" + _toString(live_programme.synopsis)
-            if live_programme.ID:
+            if hasattr(live_programme, "ID") and live_programme.ID:
                 try:
                     programme = ivysilani.Programme(live_programme.ID)
                     if programme.videoURL:
@@ -249,7 +249,10 @@ try:
                     pass
             title += " [" + _toString(_lang_(30002)) + "]"
             url = _baseurl_ + "?menu=live"
-            addDirectoryItem(title, url, image=live_programme.imageURL)
+            image = None
+            if hasattr(live_programme, 'imageURL') and live_programme.imageURL:
+                image = live_programme.imageURL
+            addDirectoryItem(title, url, image=image)
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
     def playUrl(title, url, image):
