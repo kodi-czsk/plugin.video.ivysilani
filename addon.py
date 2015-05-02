@@ -240,11 +240,9 @@ try:
                 plot += "\n\n" + _toString(live_programme.synopsis)
             if hasattr(live_programme, "ID") and live_programme.ID:
                 try:
-                    programme = ivysilani.Programme(live_programme.ID)
-                    if programme.videoURL:
-                            url = _baseurl_ + "?play=" + liveChannel.ID
-                            addDirectoryItem(title, url, ID=liveChannel.ID, plot=plot, image=live_programme.imageURL)
-                            continue
+                    url = _baseurl_ + "?play=" + liveChannel.ID
+                    addDirectoryItem(title, url, ID=liveChannel.ID, plot=plot, image=live_programme.imageURL)
+                    continue
                 except:
                     pass
             title += " [" + _toString(_lang_(30002)) + "]"
