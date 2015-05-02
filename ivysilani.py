@@ -367,7 +367,9 @@ LIVE_CHANNELS = [ LiveChannel(1, "CT1", "ČT1"),
 				  LiveChannel(24, "CT24", "ČT24"),
 				  LiveChannel(4, "CT4", "ČT Sport"),
 				  LiveChannel(5, "CT5", "ČT :D"),
-				  LiveChannel(6, "CT6", "ČT art") ]
+				  LiveChannel(6, "CT6", "ČT art"),
+				  LiveChannel(27, "CT27", "ČT Hokej Extra 1"),
+				  LiveChannel(29, "CT29", "ČT Hokej Extra 2") ]
 
 # Výběry
 SPOTLIGHTS = [ Spotlight("tipsMain", "Tipy"),
