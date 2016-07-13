@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30000">Kvalita</string>
+	<string id="30001">Začalo o</string>
+	<string id="30002">Nevysiela online</string>
+	<string id="30003">Súvisiace</string>
+	<string id="30004">Ďalšie diely</string>
+	<string id="30005">Bonusy</string>
+	<string id="30006">Ďalšie</string>
+	<string id="30007">Predchádzajúce</string>
+	<string id="30008">Automaticky vybrať kvalitu</string>
+	<string id="30009">Automaticky vybrať nižšiu kvalitu</string>
+	<string id="30010">Protokol prúdu médií</string>
+	<string id="30011">Uprednostnovať stopy s komentárom pre nepočujúcich</string>
+	<string id="30012">Upozornenie: RTMP môže spôsobiť stratu synchronizácie obrazu a zvuku pri pretáčaní</string>
+	<string id="30013">Vybrať kvalitu</string>
+	<string id="30014">Automaticky vybrať protokol podľa najlepšej kvality</string>
+	<string id="30015">Živé vysielanie</string>
+	<string id="30016">Podľa dátumu</string>
+	<string id="30017">Podľa abecedy</string>
+	<string id="30018">Podľa žánra</string>
+	<string id="30019">Tipy</string>
+	<string id="30020">Najsledovanejšie v dni</string>
+	<string id="30021">Najsledovanejšie v týždni</string>
+	<string id="30022">Neprehliadnite</string>
+	<string id="30023">Z nášho archívu</string>
+	<string id="30024">Ostatní práve sledujú</string>
+	<string id="30025">Odosielať chyby</string>
+	<string id="30026">Automaticky prispôsobovať zobrazenie</string>
+	<string id="30027">Automatické zrušenie pauzy (experimentálny bugfix pre Helix)</string>
+	<string id="30500">Nastala chyba počas behu aplikácie.</string>
+	<string id="30501">Povoliť odosielanie chýb doplnku?</string>
+	<string id="30502">Chyba byla odoslaná na opravu</string>
+	<string id="30503">Protokol o chybe se nepodarilo odoslať</string>
+	<string id="30550">Licencia pre internetové vysielanie už skončila.</string>
+	<string id="30551">Relácia nie je v iVysílání k dispozícii.</string>
+	<string id="31000">Po</string>
+	<string id="31001">Ut</string>
+	<string id="31002">St</string>
+	<string id="31003">Št</string>
+	<string id="31004">Pi</string>
+	<string id="31005">So</string>
+	<string id="31006">Ne</string>
+</strings>
