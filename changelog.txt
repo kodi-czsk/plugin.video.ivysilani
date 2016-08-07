@@ -1,3 +1,6 @@
+2016-08-08 [1.3.3]
+ * Rio Summer Olympics channels
+ * Slovak translation by jose1711. Thx
 2015-05-02 [1.3.2]
  * Extra ice hockey channels
 2015-04-26 [1.3.1]
