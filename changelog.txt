@@ -1,3 +1,5 @@
+2017-11-26 [1.3.4]
+ * New icon
 2016-08-08 [1.3.3]
  * Rio Summer Olympics channels
  * Slovak translation by jose1711. Thx
