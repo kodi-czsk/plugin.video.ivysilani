@@ -253,12 +253,19 @@ try:
             addDirectoryItem(title, url, image=image)
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
-    def playUrl(title, url, image):
+    def playUrl(title, url, image, subtitles=False):
         li = xbmcgui.ListItem(title)
         li.setThumbnailImage(image)
         playlist_file_path = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('profile'), "playlist.m3u8"))
+        subs_file_path = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'),
+                                                         "subtitles.srt"))
         urllib.urlretrieve(url, playlist_file_path)
-        xbmc.Player().play(playlist_file_path, li)
+        player = xbmc.Player()
+        player.play(playlist_file_path, li)
+        if subtitles:
+            while not player.isPlaying():
+                xbmc.sleep(2000)
+            player.setSubtitles(subs_file_path)
 
     def playPlayable(playable, skipAutoQuality=False, forceQuality=None):
         image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'logo_' + playable.ID.lower() + '_400x225.png'))
@@ -267,13 +274,15 @@ try:
         if _auto_quality_ and not skipAutoQuality and not forceQuality:
             url = autoSelectQuality(playable)
             if url:
-                playUrl(playable.title, url, image)
+                playUrl(playable.title, url, image,
+                        subtitles=getattr(playable, 'subs_available', False))
                 return
         if forceQuality:
             quality = ivysilani.Quality(forceQuality)
             url = playable.url(quality)
             if url:
-                playUrl(playable.title, url, image)
+                playUrl(playable.title, url, image,
+                        subtitles=getattr(playable, 'subs_available', False))
                 return
         qualities = playable.available_qualities()
         for quality in qualities:
