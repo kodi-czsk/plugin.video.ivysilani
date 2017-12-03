@@ -13,7 +13,7 @@ import json
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
-__version__ = "1.1.0"
+__version__ = "1.3.3"
 __email__ = "stepanort@gmail.com"
 
 # Abstraktní třída pro výpisy
@@ -207,6 +207,12 @@ class LiveChannel(_Playable):
 		return self._programme
 	
 	def _refresh(self):
+		if self.channel is None:
+			self._programme = Programme()
+			setattr(self._programme, "title", None)
+			setattr(self._programme, "ID", self.ID)
+			setattr(self._programme, "imageURL", "http://imgct.ceskatelevize.cz/cache/w400/upload/program/porady/11529101711/foto/uni.jpg")
+			return None
 		params = { "imageType": IMAGE_WIDTH,
 			   "current": 1,
 			   "channel": self.channel }
@@ -362,15 +368,23 @@ QUALITIES = ["mobile", "288p", "404p", "web", "720p"]
 PAGE_SIZE = 25
 
 # Živě
-LIVE_CHANNELS = [ LiveChannel(1, "CT1", "ČT1"),
-				  LiveChannel(2, "CT2", "ČT2"),
-				  LiveChannel(24, "CT24", "ČT24"),
-				  LiveChannel(4, "CT4", "ČT Sport"),
-				  LiveChannel(5, "CT5", "ČT :D"),
-				  LiveChannel(6, "CT6", "ČT art"),
-				  LiveChannel(27, "CT27", "ČT Hokej Extra 1"),
-				  LiveChannel(29, "CT29", "ČT Hokej Extra 2") ]
-
+LIVE_CHANNELS = [ LiveChannel("1", "CT1", "ČT1"),
+				  LiveChannel("2", "CT2", "ČT2"),
+				  LiveChannel("24", "CT24", "ČT24"),
+				  LiveChannel("4", "CT4", "ČT Sport"),
+				  LiveChannel("5", "CT5", "ČT :D"),
+				  LiveChannel("6", "CT6", "ČT art"),
+				  LiveChannel(None, "CT26", "ČT LOH1"),
+				  LiveChannel(None, "CT27", "ČT LOH2"),
+				  LiveChannel(None, "CT28", "ČT LOH3"),
+				  LiveChannel(None, "CT29", "ČT LOH4"),
+				  LiveChannel(None, "CT30", "ČT LOH5"),
+				  LiveChannel(None, "CT31", "ČT LOH6"),
+				  LiveChannel(None, "CT32", "ČT LOH7"),
+				  LiveChannel(None, "CT33", "ČT LOH8"),
+				  LiveChannel(None, "CTmobile03", "ČT LOH Lipno"),
+				  ]
+# 1, 2, 24, 4, 5, 6, 9, 25, 26, 27, 28, 29, mobile, mobile2, mobile03, mobile04, mobile05
 # Výběry
 SPOTLIGHTS = [ Spotlight("tipsMain", "Tipy"),
 			   Spotlight("topDay", "Nejsledovanější dne"),
