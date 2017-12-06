@@ -70,11 +70,12 @@ def _exception_log(exc_type, exc_value, exc_traceback):
 try:
     # First run
     if not (_addon_.getSetting("settings_init_done") == "true"):
-        DEFAULT_SETTING_VALUES = {"quality" : "576p",
-                                  "auto_quality" : "true",
-                                  "quality_fallback" : "true",
-                                  "auto_view_mode" : "true",
-                                  "send_errors" : "false"}
+        DEFAULT_SETTING_VALUES = {"quality": "576p",
+                                  "auto_quality": "true",
+                                  "quality_fallback": "true",
+                                  "auto_view_mode": "true",
+                                  "send_errors": "false",
+                                  "show_subtitles": "false"}
         for setting in DEFAULT_SETTING_VALUES.keys():
             val = _addon_.getSetting(setting)
             if not val:
@@ -87,6 +88,7 @@ try:
     _first_error_ = (_addon_.getSetting('first_error') == "true")
     _send_errors_ = (_addon_.getSetting('send_errors') == "true")
     _auto_view_mode_ = (_addon_.getSetting('auto_view_mode') == "true")
+    _show_subtitles_ = (_addon_.getSetting('show_subtitles') == "true")
     _icon_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'icon.png'))
     _next_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'next.png'))
     _previous_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'previous.png'))
@@ -434,7 +436,7 @@ try:
             skip_auto = (skip_auto is not None and skip_auto != "0")
             playable = selectLiveChannel(play)
             if not playable:
-                playable = ivysilani.Programme(play)
+                playable = ivysilani.Programme(play, show_subs=_show_subtitles_)
             playPlayable(playable, skip_auto, force_quality)
         elif genre:
             for g in ivysilani.genres():

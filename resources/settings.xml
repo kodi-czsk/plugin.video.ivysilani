@@ -5,4 +5,5 @@
     <setting id="quality_fallback" type="bool" label="30009" default="true" enable="eq(-2,true)" />
     <setting id="auto_view_mode" type="bool" label="30026" default="true" />
     <setting id="send_errors" type="bool" label="30025" default="false" />
+    <setting id="download_subs" type="bool" label="30030" default="false" />
 </settings>

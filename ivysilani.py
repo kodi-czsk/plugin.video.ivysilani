@@ -262,7 +262,7 @@ class LiveChannel(_Playable):
 class Programme(_Playable):
 	
 
-	def __init__(self, ID=None):
+	def __init__(self, ID=None, show_subs=False):
 		if ID is None:
 			return
 		params = { "imageType": IMAGE_WIDTH,
@@ -276,7 +276,10 @@ class Programme(_Playable):
 		programme = root
 		for child in programme:
 			setattr(self, child.tag, child.text)
-		setattr(self, 'subs_available', self.subs())
+		if show_subs:
+			setattr(self, 'subs_available', self.subs())
+		else:
+			setattr(self, 'subs_available', False)
 	
 	def _list(self, name, current_page, page_size):
 		if page_size is None:
