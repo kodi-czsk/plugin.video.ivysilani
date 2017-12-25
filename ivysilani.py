@@ -10,11 +10,17 @@ import urllib
 import xml.etree.ElementTree as ET
 import time
 import json
+import util
+import xbmc
+import xbmcaddon
+import os
+from datetime import datetime, timedelta
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
 __version__ = "1.3.3"
 __email__ = "stepanort@gmail.com"
+__addon__ = xbmcaddon.Addon(id='plugin.video.ivysilani')
 
 # Abstraktní třída pro výpisy
 class _ProgrammeList:
@@ -191,6 +197,31 @@ class _Playable:
 			return None
 		return url
 
+	def subs(self):
+		soup = util.parse_html(self.webURL + '/titulky')
+		sub_out = []
+		cnt = 1
+		for sub in soup.find_all(id='subtitles')[0].find_all('li'):
+			s_tme = sub.a.text
+			s_txt = ''.join(sub.find_all(text=True, recursive=False)).strip()
+			sub_out.append(str(cnt))
+			cnt += 1
+			start = datetime.strptime(s_tme, '%H:%M:%S')
+			end = start + timedelta(seconds=len(s_txt) * 1/14)
+			end = end.strftime('%H:%M:%S')
+			sub_out.append(s_tme + ',000 --> ' + end + ',000')
+			sub_out.append(s_txt)
+			sub_out.append('')
+			# print s_tme, s_txt.encode('utf-8')
+		if cnt < 2:
+			return False
+		local_subs = xbmc.translatePath(__addon__.getAddonInfo('path')).decode('utf-8')
+		local_subs = os.path.join(local_subs, 'subtitles.srt')
+		f_sub = open(local_subs, 'w')
+		f_sub.write('\n'.join(sub_out).encode('utf-8'))
+		f_sub.close()
+		return True
+
 # Kanál
 class LiveChannel(_Playable):
 	
@@ -231,11 +262,11 @@ class LiveChannel(_Playable):
 class Programme(_Playable):
 	
 
-	def __init__(self, ID=None):
+	def __init__(self, ID=None, show_subs=False):
 		if ID is None:
 			return
 		params = { "imageType": IMAGE_WIDTH,
-			   	   "ID":  ID}
+				   "ID":  ID}
 		data = _fetch(PROGRAMMEDETAIL_URL, params)
 		if data is None:
 			return None
@@ -245,6 +276,10 @@ class Programme(_Playable):
 		programme = root
 		for child in programme:
 			setattr(self, child.tag, child.text)
+		if show_subs:
+			setattr(self, 'subs_available', self.subs())
+		else:
+			setattr(self, 'subs_available', False)
 	
 	def _list(self, name, current_page, page_size):
 		if page_size is None:
@@ -291,7 +326,7 @@ def _https_ceska_televize_fetch(url, params):
 	headers = { "Content-type": "application/x-www-form-urlencoded",
 				"Accept-encoding": "gzip",
 				"Connection": "Keep-Alive",
-            	"User-Agent": "Dalvik/1.6.0 (Linux; U; Android 4.4.4; Nexus 7 Build/KTU84P)" }
+				"User-Agent": "Dalvik/1.6.0 (Linux; U; Android 4.4.4; Nexus 7 Build/KTU84P)" }
 	conn = httplib.HTTPSConnection("www.ceskatelevize.cz")
 	conn.request("POST", url, urllib.urlencode(params), headers)
 	response = conn.getresponse()
