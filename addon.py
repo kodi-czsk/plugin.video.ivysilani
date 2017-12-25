@@ -214,7 +214,7 @@ try:
         url = playable.url(setting_quality)
         if url or not _quality_fallback_:
             return url
-        all_qualities = [ "720p", "576p", "404p", "288p", "144p" ]
+        all_qualities = [ "1080p", "720p", "576p", "404p", "288p", "144p" ]
         for q in all_qualities:
             quality = ivysilani.Quality(q)
             if  setting_quality.height < quality.height:

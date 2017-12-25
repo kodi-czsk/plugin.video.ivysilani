@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <setting id="auto_quality" type="bool" label="30008" default="true" />
-    <setting id="quality" type="labelenum" label="30000" values="144p|288p|404p|576p|720p" default="576p" enable="eq(-1,true)" />
+    <setting id="quality" type="labelenum" label="30000" values="144p|288p|404p|576p|720p|1080p" default="576p" enable="eq(-1,true)" />
     <setting id="quality_fallback" type="bool" label="30009" default="true" enable="eq(-2,true)" />
     <setting id="auto_view_mode" type="bool" label="30026" default="true" />
     <setting id="send_errors" type="bool" label="30025" default="false" />

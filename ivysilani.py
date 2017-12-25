@@ -363,7 +363,7 @@ ALPHABETLIST_URL = "/services/ivysilani/xml/alphabetlist/"
 
 IMAGE_WIDTH = 400  # doporučeno na TheTvDB Wiki
 
-QUALITIES = ["mobile", "288p", "404p", "web", "720p"]
+QUALITIES = ["mobile", "288p", "404p", "web", "720p", "1080p"]
 
 PAGE_SIZE = 25
 
