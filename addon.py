@@ -70,11 +70,12 @@ def _exception_log(exc_type, exc_value, exc_traceback):
 try:
     # First run
     if not (_addon_.getSetting("settings_init_done") == "true"):
-        DEFAULT_SETTING_VALUES = {"quality" : "576p",
-                                  "auto_quality" : "true",
-                                  "quality_fallback" : "true",
-                                  "auto_view_mode" : "true",
-                                  "send_errors" : "false"}
+        DEFAULT_SETTING_VALUES = {"quality": "576p",
+                                  "auto_quality": "true",
+                                  "quality_fallback": "true",
+                                  "auto_view_mode": "true",
+                                  "send_errors": "false",
+                                  "show_subtitles": "false"}
         for setting in DEFAULT_SETTING_VALUES.keys():
             val = _addon_.getSetting(setting)
             if not val:
@@ -87,6 +88,7 @@ try:
     _first_error_ = (_addon_.getSetting('first_error') == "true")
     _send_errors_ = (_addon_.getSetting('send_errors') == "true")
     _auto_view_mode_ = (_addon_.getSetting('auto_view_mode') == "true")
+    _show_subtitles_ = (_addon_.getSetting('show_subtitles') == "true")
     _icon_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'icon.png'))
     _next_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'next.png'))
     _previous_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'previous.png'))
@@ -253,12 +255,19 @@ try:
             addDirectoryItem(title, url, image=image)
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
-    def playUrl(title, url, image):
+    def playUrl(title, url, image, subtitles=False):
         li = xbmcgui.ListItem(title)
         li.setThumbnailImage(image)
         playlist_file_path = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('profile'), "playlist.m3u8"))
+        subs_file_path = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'),
+                                                         "subtitles.srt"))
         urllib.urlretrieve(url, playlist_file_path)
-        xbmc.Player().play(playlist_file_path, li)
+        player = xbmc.Player()
+        player.play(playlist_file_path, li)
+        if subtitles:
+            while not player.isPlaying():
+                xbmc.sleep(2000)
+            player.setSubtitles(subs_file_path)
 
     def playPlayable(playable, skipAutoQuality=False, forceQuality=None):
         image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'logo_' + playable.ID.lower() + '_400x225.png'))
@@ -267,13 +276,15 @@ try:
         if _auto_quality_ and not skipAutoQuality and not forceQuality:
             url = autoSelectQuality(playable)
             if url:
-                playUrl(playable.title, url, image)
+                playUrl(playable.title, url, image,
+                        subtitles=getattr(playable, 'subs_available', False))
                 return
         if forceQuality:
             quality = ivysilani.Quality(forceQuality)
             url = playable.url(quality)
             if url:
-                playUrl(playable.title, url, image)
+                playUrl(playable.title, url, image,
+                        subtitles=getattr(playable, 'subs_available', False))
                 return
         qualities = playable.available_qualities()
         for quality in qualities:
@@ -425,7 +436,7 @@ try:
             skip_auto = (skip_auto is not None and skip_auto != "0")
             playable = selectLiveChannel(play)
             if not playable:
-                playable = ivysilani.Programme(play)
+                playable = ivysilani.Programme(play, show_subs=_show_subtitles_)
             playPlayable(playable, skip_auto, force_quality)
         elif genre:
             for g in ivysilani.genres():

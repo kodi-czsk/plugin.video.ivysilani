@@ -1,3 +1,5 @@
+2017-06-12 [1.3.4]
+ * Add option to show subtitles (if available) - fixed #13
 2016-08-08 [1.3.3]
  * Rio Summer Olympics channels
  * Slovak translation by jose1711. Thx

@@ -28,6 +28,7 @@
 	<string id="30025">Odesílat chyby</string>
 	<string id="30026">Automaticky přizpůsobovat zobrazení</string>
 	<string id="30027">Automaticky zrušení pauzy (experimentální bugfix pro Helix)</string>
+	<string id="30030">Zobrazit titulky</string>
 	<string id="30500">Nastala chyba při běhu aplikace.</string>
 	<string id="30501">Povolit odesílání chyb doplňku?</string>
 	<string id="30502">Chyba byla odeslána k opravě</string>
