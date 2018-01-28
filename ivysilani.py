@@ -15,7 +15,7 @@ import util
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
-__version__ = "1.3.3"
+__version__ = "1.3.5"
 __email__ = "stepanort@gmail.com"
 
 
@@ -204,17 +204,19 @@ class _Playable:
         soup = util.parse_html(self.webURL + '/titulky')
         sub_out = []
         cnt = 1
-        for sub in soup.find_all(id='subtitles')[0].find_all('li'):
-            s_tme = sub.find_all('a')[0].text
-            s_txt = ''.join(sub.find_all(text=True, recursive=False)).strip()
-            sub_out.append(str(cnt))
-            cnt += 1
-            start = datetime.strptime(s_tme, '%H:%M:%S')
-            end = start + timedelta(seconds=len(s_txt) * 1 / 14)
-            end = end.strftime('%H:%M:%S')
-            sub_out.append(s_tme + ',000 --> ' + end + ',000')
-            sub_out.append(s_txt)
-            sub_out.append('')
+        subtitles = soup.find_all(id='subtitles')
+        if subtitles:
+            for sub in subtitles[0].find_all('li'):
+                s_tme = sub.find_all('a')[0].text
+                s_txt = ''.join(sub.find_all(text=True, recursive=False)).strip()
+                sub_out.append(str(cnt))
+                cnt += 1
+                start = datetime.strptime(s_tme, '%H:%M:%S')
+                end = start + timedelta(seconds=len(s_txt) * 1 / 14)
+                end = end.strftime('%H:%M:%S')
+                sub_out.append(s_tme + ',000 --> ' + end + ',000')
+                sub_out.append(s_txt)
+                sub_out.append('')
         # print s_tme, s_txt.encode('utf-8')
         if cnt < 2:
             return False
