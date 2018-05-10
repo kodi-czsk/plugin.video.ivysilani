@@ -15,7 +15,6 @@ import util
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
-__version__ = "1.3.5"
 __email__ = "stepanort@gmail.com"
 
 

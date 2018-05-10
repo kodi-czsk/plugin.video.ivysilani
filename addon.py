@@ -282,10 +282,13 @@ try:
     def playUrl(title, url, image, subtitles=False):
         li = xbmcgui.ListItem(title)
         li.setThumbnailImage(image)
-        playlist_file_path = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('profile'), "playlist.m3u8"))
-        urllib.urlretrieve(url, playlist_file_path)
+        res = urllib.urlopen(url)
+        try:
+            url = res.geturl()
+        finally:
+            res.close()
         player = xbmc.Player()
-        player.play(playlist_file_path, li)
+        player.play(url, li)
         if subtitles:
             while not player.isPlaying():
                 xbmc.sleep(2000)
