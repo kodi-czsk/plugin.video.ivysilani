@@ -355,6 +355,7 @@ try:
 
     def listDates():
         day_names = []
+        listing = []
         for i in range(7):
             day_names.append(_lang_(31000 + i))
         dt = datetime.now();
@@ -362,8 +363,10 @@ try:
         while dt > min_date:
             pretty_date = day_names[dt.weekday()] + " " + dt.strftime("%d.%m.%Y")
             formated_date = dt.strftime("%Y-%m-%d")
-            addDirectoryItem(pretty_date, _baseurl_ + "?date=" + urllib.quote_plus(formated_date))
+            list_item = xbmcgui.ListItem(label=pretty_date)
+            listing.append((_baseurl_ + "?date=" + urllib.quote_plus(formated_date), list_item, True))
             dt = dt - timedelta(days=1)
+        xbmcplugin.addDirectoryItems(_handle_, listing, len(listing))
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
 
