@@ -252,8 +252,8 @@ try:
     def listLiveChannels():
         xbmcplugin.setContent(_handle_, "episodes")
         for liveChannel in ivysilani.LIVE_CHANNELS:
-            title = _toString(liveChannel.title)
             live_programme = liveChannel.programme()
+            title = _toString(liveChannel.title)
             if hasattr(live_programme, "title") and live_programme.title:
                 title += ": " + _toString(live_programme.title)
             plot = None
@@ -270,12 +270,13 @@ try:
                     continue
                 except:
                     pass
-            title += " [" + _toString(_lang_(30002)) + "]"
-            url = _baseurl_ + "?menu=live"
-            image = None
-            if hasattr(live_programme, 'imageURL') and live_programme.imageURL:
-                image = live_programme.imageURL
-            addDirectoryItem(title, url, image=image)
+            if liveChannel.permanent:
+                title += " [" + _toString(_lang_(30002)) + "]"
+                url = _baseurl_ + "?menu=live"
+                image = None
+                if hasattr(live_programme, 'imageURL') and live_programme.imageURL:
+                    image = live_programme.imageURL
+                addDirectoryItem(title, url, image=image)
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
 
@@ -372,10 +373,11 @@ try:
 
     def listChannelsForDate(date):
         for channel in ivysilani.LIVE_CHANNELS:
-            image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
-                                                    'logo_' + channel.ID.lower() + '_400x225.png'))
-            url = _baseurl_ + "?date=" + urllib.quote_plus(date) + "&channel=" + channel.ID
-            addDirectoryItem(_toString(channel.title), url, image=image)
+            if channel.permanent:
+                image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
+                                                        'logo_' + channel.ID.lower() + '_400x225.png'))
+                url = _baseurl_ + "?date=" + urllib.quote_plus(date) + "&channel=" + channel.ID
+                addDirectoryItem(_toString(channel.title), url, image=image)
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
 
