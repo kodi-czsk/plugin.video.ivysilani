@@ -229,10 +229,11 @@ class _Playable:
 class LiveChannel(_Playable):
     _programme = None
 
-    def __init__(self, channel, ID, title):
+    def __init__(self, channel, title='', permanent=False):
         self.channel = channel
-        self.ID = ID
+        self.ID = 'CT' + self.channel
         self.title = title
+        self.permanent = permanent
 
     def programme(self):
         if self._programme is None:
@@ -240,13 +241,6 @@ class LiveChannel(_Playable):
         return self._programme
 
     def _refresh(self):
-        if self.channel is None:
-            self._programme = Programme()
-            setattr(self._programme, "title", None)
-            setattr(self._programme, "ID", self.ID)
-            setattr(self._programme, "imageURL",
-                    "http://imgct.ceskatelevize.cz/cache/w400/upload/program/porady/11529101711/foto/uni.jpg")
-            return None
         params = {"imageType": IMAGE_WIDTH,
                   "current": 1,
                   "channel": self.channel}
@@ -260,6 +254,8 @@ class LiveChannel(_Playable):
         programme = root[0][0][0]
         for child in programme:
             setattr(self._programme, child.tag, child.text)
+        if hasattr(self._programme, "channelTitle") and self._programme.channelTitle:
+            self.title = self._programme.channelTitle
 
 
 # Program
@@ -419,21 +415,23 @@ QUALITIES = ["mobile", "288p", "404p", "web", "720p", "1080p"]
 PAGE_SIZE = 25
 
 # Živě
-LIVE_CHANNELS = [LiveChannel("1", "CT1", "ČT1"),
-                 LiveChannel("2", "CT2", "ČT2"),
-                 LiveChannel("24", "CT24", "ČT24"),
-                 LiveChannel("4", "CT4", "ČT Sport"),
-                 LiveChannel("5", "CT5", "ČT :D"),
-                 LiveChannel("6", "CT6", "ČT art"),
-                 # LiveChannel(None, "CT26", "ČT LOH1"),
-                 # LiveChannel(None, "CT27", "ČT LOH2"),
-                 # LiveChannel(None, "CT28", "ČT LOH3"),
-                 # LiveChannel(None, "CT29", "ČT LOH4"),
-                 # LiveChannel(None, "CT30", "ČT LOH5"),
-                 # LiveChannel(None, "CT31", "ČT LOH6"),
-                 # LiveChannel(None, "CT32", "ČT LOH7"),
-                 # LiveChannel(None, "CT33", "ČT LOH8"),
-                 # LiveChannel(None, "CTmobile03", "ČT LOH Lipno"),
+LIVE_CHANNELS = [LiveChannel("1", "ČT1", True),
+                 LiveChannel("2", "ČT2", True),
+                 LiveChannel("24", "ČT24", True),
+                 LiveChannel("4", "ČT Sport", True),
+                 LiveChannel("5", "ČT :D", True),
+                 LiveChannel("6", "ČT art", True),
+                 LiveChannel("9"),
+                 LiveChannel("25"),
+                 LiveChannel("26"),
+                 LiveChannel("27"),
+                 LiveChannel("28"),
+                 LiveChannel("29"),
+                 LiveChannel("mobile"),
+                 LiveChannel("mobile2"),
+                 LiveChannel("mobile03"),
+                 LiveChannel("mobile04"),
+                 LiveChannel("mobile05"),
                  ]
 # 1, 2, 24, 4, 5, 6, 9, 25, 26, 27, 28, 29, mobile, mobile2, mobile03, mobile04, mobile05
 # Výběry
