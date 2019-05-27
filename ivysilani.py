@@ -11,6 +11,9 @@ import urllib2
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 
+from StringIO import StringIO
+import gzip
+
 import util
 
 __author__ = "Štěpán Ort"
@@ -331,7 +334,10 @@ def _https_ceska_televize_fetch(url, params):
     conn.request("POST", url, urllib.urlencode(params), headers)
     response = conn.getresponse()
     if response.status == 200:
-        data = response.read()
+        if response.getheader('Content-Encoding') == 'gzip':
+            data = gzip.GzipFile(fileobj = StringIO(response.read())).read()
+        else:
+            data = response.read()
         conn.close()
         return data
     return None

@@ -1,3 +1,5 @@
+2019-05-27 [1.3.8]
+ * Unzipping playlist if needed. Thx PitelVonSacek / gorn
 2019-05-16 [1.3.7]
  * Show temporary channels (Olympics, ...) if broadcasting
 2018-05-10 [1.3.6]
