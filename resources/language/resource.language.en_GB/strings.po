@@ -1,0 +1,186 @@
+# Kodi Media Center language file
+# Addon Name: iVysílání — Česká televize
+# Addon id: plugin.video.ivysilani
+# Addon Provider: Štěpán Ort
+msgid ""
+msgstr ""
+"Project-Id-Version: Kodi Addons\n"
+"Report-Msgid-Bugs-To: https://forum.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Team-Kodi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Quality"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Started at"
+msgstr ""
+
+msgctxt "#30002"
+msgid "No online broadcasting"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Related"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Episodes"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Bonuses"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Next"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Previous"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Automatic quality"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Automatic lower quality selection"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Media streaming protocol"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Audio description"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Warning: RTMP may cause audio and video desynchronization after shifting"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Select quality"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Automatic protocol selection"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Live channels"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Date"
+msgstr ""
+
+msgctxt "#30017"
+msgid "A-Z"
+msgstr ""
+
+msgctxt "#30018"
+msgid "Genres"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Tips"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Top today"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Top this week"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Don't overlook"
+msgstr ""
+
+msgctxt "#30023"
+msgid "Tips from our archive"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Other people are watching"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Report errors"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Automatic view mode"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Automatic unpause (experimental bugfix for Helix)"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Show subtitles"
+msgstr ""
+
+msgctxt "#30500"
+msgid "Error ocurred during runtime."
+msgstr ""
+
+msgctxt "#30501"
+msgid "Allow reporting of errors?"
+msgstr ""
+
+msgctxt "#30502"
+msgid "Error was sent to be repaired"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Failure report could not be sent"
+msgstr ""
+
+msgctxt "#30550"
+msgid "License for internet broadcast expired."
+msgstr ""
+
+msgctxt "#30551"
+msgid "Programme is not available."
+msgstr ""
+
+msgctxt "#31000"
+msgid "Mon"
+msgstr ""
+
+msgctxt "#31001"
+msgid "Tue"
+msgstr ""
+
+msgctxt "#31002"
+msgid "Wed"
+msgstr ""
+
+msgctxt "#31003"
+msgid "Thu"
+msgstr ""
+
+msgctxt "#31004"
+msgid "Fri"
+msgstr ""
+
+msgctxt "#31005"
+msgid "Sat"
+msgstr ""
+
+msgctxt "#31006"
+msgid "Sun"
+msgstr ""
+
