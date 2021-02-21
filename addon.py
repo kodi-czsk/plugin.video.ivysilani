@@ -36,7 +36,7 @@ if REMOTE_DBG:
 ###############################################################################
 
 params = None
-_addon_ = xbmcaddon.Addon('plugin.video.ivysilani')
+_addon_ = xbmcaddon.Addon('plugin.video.ivysilani.cz')
 _lang_ = _addon_.getLocalizedString
 _scriptname_ = _addon_.getAddonInfo('name')
 _version_ = _addon_.getAddonInfo('version')
