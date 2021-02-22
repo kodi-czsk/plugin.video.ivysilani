@@ -1,0 +1,186 @@
+# Kodi Media Center language file
+# Addon Name: iVysílání — Česká televize
+# Addon id: plugin.video.ivysilani
+# Addon Provider: Štěpán Ort
+msgid ""
+msgstr ""
+"Project-Id-Version: Kodi Addons\n"
+"Report-Msgid-Bugs-To: https://forum.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Team-Kodi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs_CZ\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Quality"
+msgstr "Kvalita"
+
+msgctxt "#30001"
+msgid "Started at"
+msgstr "Začalo v"
+
+msgctxt "#30002"
+msgid "No online broadcasting"
+msgstr "Nevysílá online"
+
+msgctxt "#30003"
+msgid "Related"
+msgstr "Související"
+
+msgctxt "#30004"
+msgid "Episodes"
+msgstr "Další díly"
+
+msgctxt "#30005"
+msgid "Bonuses"
+msgstr "Bonusy"
+
+msgctxt "#30006"
+msgid "Next"
+msgstr "Další"
+
+msgctxt "#30007"
+msgid "Previous"
+msgstr "Předchozí"
+
+msgctxt "#30008"
+msgid "Automatic quality"
+msgstr "Automaticky vybrat kvalitu"
+
+msgctxt "#30009"
+msgid "Automatic lower quality selection"
+msgstr "Automaticky vybrat nižší kvalitu"
+
+msgctxt "#30010"
+msgid "Media streaming protocol"
+msgstr "Protokol proudu medií"
+
+msgctxt "#30011"
+msgid "Audio description"
+msgstr "Preferovat stopy s komentářem pro neslyšící"
+
+msgctxt "#30012"
+msgid "Warning: RTMP may cause audio and video desynchronization after shifting"
+msgstr "Upozornění: RTMP může způsobit ztrátu synchronizace obrazu a zvuku při přesouvání"
+
+msgctxt "#30013"
+msgid "Select quality"
+msgstr "Vybrat kvalitu"
+
+msgctxt "#30014"
+msgid "Automatic protocol selection"
+msgstr "Automaticky zvolit protokol podle nejlepší kvality"
+
+msgctxt "#30015"
+msgid "Live channels"
+msgstr "Živé vysílání"
+
+msgctxt "#30016"
+msgid "Date"
+msgstr "Podle data"
+
+msgctxt "#30017"
+msgid "A-Z"
+msgstr "Podle abecedy"
+
+msgctxt "#30018"
+msgid "Genres"
+msgstr "Podle žánru"
+
+msgctxt "#30019"
+msgid "Tips"
+msgstr "Tipy"
+
+msgctxt "#30020"
+msgid "Top today"
+msgstr "Nejsledovanější dne"
+
+msgctxt "#30021"
+msgid "Top this week"
+msgstr "Nejsledovanější týdne"
+
+msgctxt "#30022"
+msgid "Don't overlook"
+msgstr "Nepřehlédněte"
+
+msgctxt "#30023"
+msgid "Tips from our archive"
+msgstr "Z našeho archivu"
+
+msgctxt "#30024"
+msgid "Other people are watching"
+msgstr "Ostatní právě sledují"
+
+msgctxt "#30025"
+msgid "Report errors"
+msgstr "Odesílat chyby"
+
+msgctxt "#30026"
+msgid "Automatic view mode"
+msgstr "Automaticky přizpůsobovat zobrazení"
+
+msgctxt "#30027"
+msgid "Automatic unpause (experimental bugfix for Helix)"
+msgstr "Automaticky zrušení pauzy (experimentální bugfix pro Helix)"
+
+msgctxt "#30030"
+msgid "Show subtitles"
+msgstr "Zobrazit titulky"
+
+msgctxt "#30500"
+msgid "Error ocurred during runtime."
+msgstr "Nastala chyba při běhu aplikace."
+
+msgctxt "#30501"
+msgid "Allow reporting of errors?"
+msgstr "Povolit odesílání chyb doplňku?"
+
+msgctxt "#30502"
+msgid "Error was sent to be repaired"
+msgstr "Chyba byla odeslána k opravě"
+
+msgctxt "#30503"
+msgid "Failure report could not be sent"
+msgstr "Report o chybě se nepodařilo odeslat"
+
+msgctxt "#30550"
+msgid "License for internet broadcast expired."
+msgstr "Licence pro internetové vysílání již skončila."
+
+msgctxt "#30551"
+msgid "Programme is not available."
+msgstr "Pořad není v iVysílání k dispozici."
+
+msgctxt "#31000"
+msgid "Mon"
+msgstr "Po"
+
+msgctxt "#31001"
+msgid "Tue"
+msgstr "Út"
+
+msgctxt "#31002"
+msgid "Wed"
+msgstr "St"
+
+msgctxt "#31003"
+msgid "Thu"
+msgstr "Čt"
+
+msgctxt "#31004"
+msgid "Fri"
+msgstr "Pá"
+
+msgctxt "#31005"
+msgid "Sat"
+msgstr "So"
+
+msgctxt "#31006"
+msgid "Sun"
+msgstr "Ne"
+
