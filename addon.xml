@@ -3,7 +3,6 @@
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.stream.resolver" version="1.7.0"/>
-	<import addon="script.module.web-pdb" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="addon.py">
         <provides>video</provides>
@@ -14,6 +13,9 @@
         <description lang="cs_CZ">Plugin nabízí přístup do archivu České televize iVysílání i přehrávání kanálů živě.
         </description>
         <platform>all</platform>
-	<language>cs en sk</language>
+        <language>cs en sk</language>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
     </extension>
 </addon>
