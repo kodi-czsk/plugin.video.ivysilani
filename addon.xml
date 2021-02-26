@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.ivysilani.cz" name="iVysílání — Česká televize" version="1.4.0" provider-name="Štěpán Ort">
+<?xml version='1.0' encoding='utf-8'?>
+<addon id="plugin.video.rtvs.sk" name="rtvs.sk" provider-name="Maros Ondrasek" version="1.9.0">
     <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.stream.resolver" version="1.7.0"/>
+        <import addon="xbmc.python" version="3.0.0" />
+        <import addon="script.module.stream.resolver" version="1.6.13" />
     </requires>
-    <extension point="xbmc.python.pluginsource" library="addon.py">
+    <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary>iVysílání — Česká televize</summary>
-        <description>Plugin to play videos and live TV from Czech Television's iVysilani</description>
-        <description lang="cs_CZ">Plugin nabízí přístup do archivu České televize iVysílání i přehrávání kanálů živě.
-        </description>
+        <summary lang="en">rtvs.sk</summary>
+        <summary lang="cs">rtvs.sk</summary>
+        <summary lang="sk">rtvs.sk</summary>
+        <description lang="en">Watch online TV archive from rtvs.sk</description>
+        <description lang="cs">Sledujte TV archiv zo serveru rtvs.sk</description>
+        <description lang="sk">Sledujte TV archív zo serveru rtvs.sk</description>
         <platform>all</platform>
-        <language>cs en sk</language>
+        <source>https://github.com/kodi-czsk/plugin.video.rtvs.sk</source>
         <assets>
             <icon>icon.png</icon>
         </assets>
