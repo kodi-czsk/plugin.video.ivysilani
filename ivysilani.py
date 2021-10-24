@@ -16,6 +16,9 @@ import gzip
 
 import util
 import sys
+import json
+import xbmc
+from xbmc import log
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
@@ -176,10 +179,11 @@ class _Playable:
                   "playerType": "iPad",
                   "quality": quality.quality()}
         data = None
+
         try:
             data = _fetch(PLAYLISTURL_URL, params)
         except Exception as ex:
-            print(str(ex), file=sys.stderr)
+            log(str(ex), xbmc.LOGERROR)
             return None
         root = ET.fromstring(data)
         if root.tag == "errors":
@@ -194,13 +198,59 @@ class _Playable:
                 url = video.get("src")
         if not url:
             return None
+
+        if "drmOnly=true" in url:
+            return self.drmUrl(quality)
+
         switchItem = root.find("smilRoot/body/switchItem")
         if switchItem:
             url = switchItem.get("base") + "/" + url
         try:
             if urllib.request.urlopen(url).getcode() == 200:
                 self._links()[quality] = url
-        except urllib.error.HTTPError:
+        except urllib.error.HTTPError as ex:
+            log("Error getting URL '" + url + "': " + str(ex), xbmc.LOGERROR)
+            return None
+
+        return url
+
+    def drmUrl(self, quality):
+        url = None
+        params = {"ID": self.ID,
+                  "playerType": "dash",
+                  "quality": quality.quality()}
+        data = None
+        try:
+            data = _fetch(PLAYLISTURL_URL, params)
+        except Exception as ex:
+            log(str(ex), xbmc.LOGERROR)
+            return None
+
+        root = ET.fromstring(data)
+        if root.tag == "errors":
+            raise Exception(', '.join([e.text for e in root]))
+        playlist_url = root.text
+        resp = urllib.request.urlopen(playlist_url)
+        playlist_data = resp.read()
+        try:
+            root = json.loads(playlist_data)
+        except json.JSONDecodeError as ex:
+            log(str(ex), xbmc.LOGERROR)
+            return None
+
+        if not "playlist" in root or len(root["playlist"]) == 0:
+            return None
+
+        for video in root["playlist"]:
+            if 'streamUrls' in video and "main" in video["streamUrls"]:
+                url = video["streamUrls"]["main"]
+        if not url:
+            return None
+        try:
+            if urllib.request.urlopen(url).getcode() == 200:
+                self._links()[quality] = url
+        except urllib.error.HTTPError as ex:
+            log("Error getting URL '" + url + "': " + str(ex), xbmc.LOGERROR)
             return None
         return url
 
