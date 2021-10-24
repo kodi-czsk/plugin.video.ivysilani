@@ -18,5 +18,7 @@
         <assets>
             <icon>icon.png</icon>
         </assets>
+        <news>Přidána podpora DRM obsahu (@brozicz)
+        </news>
     </extension>
 </addon>
