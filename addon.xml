@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.ivysilani.cz" name="iVysílání — Česká televize" version="1.4.0" provider-name="Štěpán Ort">
+<addon id="plugin.video.ivysilani.cz" name="iVysílání — Česká televize" version="1.4.1" provider-name="Štěpán Ort">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.stream.resolver" version="1.7.0"/>
+        <import addon="script.module.inputstreamhelper" version="0.5.8"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="addon.py">
         <provides>video</provides>
