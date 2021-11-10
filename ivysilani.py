@@ -4,17 +4,21 @@
 """Wrapper pro iVysílání České televize
 """
 
-import httplib
+import http.client
 import time
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 
-from StringIO import StringIO
+from io import StringIO, BytesIO
 import gzip
 
 import util
+import sys
+import json
+import xbmc
+from xbmc import log
 
 __author__ = "Štěpán Ort"
 __license__ = "MIT"
@@ -145,15 +149,15 @@ class _Playable:
             try:
                 quality = Quality(quality_label)
                 url = self.url(quality)
-                import urlparse
-                par = urlparse.parse_qs(urlparse.urlparse(url).query)
+                import urllib.parse
+                par = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
                 label = _toString(par['quality'][0])
                 quality = Quality(label)
                 if quality not in self._links():
                     self._links()[quality] = url
             except:
                 pass
-        qualities = self._links().keys()
+        qualities = list(self._links().keys())
         sorted_qualities = sorted(qualities, key=lambda quality: quality.height, reverse=True)
         return sorted_qualities
 
@@ -175,15 +179,17 @@ class _Playable:
                   "playerType": "iPad",
                   "quality": quality.quality()}
         data = None
+
         try:
             data = _fetch(PLAYLISTURL_URL, params)
-        except:
+        except Exception as ex:
+            log(str(ex), xbmc.LOGERROR)
             return None
         root = ET.fromstring(data)
         if root.tag == "errors":
             raise Exception(', '.join([e.text for e in root]))
         playlist_url = root.text
-        resp = urllib2.urlopen(playlist_url)
+        resp = urllib.request.urlopen(playlist_url)
         playlist_data = resp.read()
         root = ET.fromstring(playlist_data)
         videos = root.findall("smilRoot/body//video")
@@ -192,13 +198,59 @@ class _Playable:
                 url = video.get("src")
         if not url:
             return None
+
+        if "drmOnly=true" in url:
+            return self.drmUrl(quality)
+
         switchItem = root.find("smilRoot/body/switchItem")
         if switchItem:
             url = switchItem.get("base") + "/" + url
         try:
-            if urllib2.urlopen(url).getcode() == 200:
+            if urllib.request.urlopen(url).getcode() == 200:
                 self._links()[quality] = url
-        except urllib2.HTTPError:
+        except urllib.error.HTTPError as ex:
+            log("Error getting URL '" + url + "': " + str(ex), xbmc.LOGERROR)
+            return None
+
+        return url
+
+    def drmUrl(self, quality):
+        url = None
+        params = {"ID": self.ID,
+                  "playerType": "dash",
+                  "quality": quality.quality()}
+        data = None
+        try:
+            data = _fetch(PLAYLISTURL_URL, params)
+        except Exception as ex:
+            log(str(ex), xbmc.LOGERROR)
+            return None
+
+        root = ET.fromstring(data)
+        if root.tag == "errors":
+            raise Exception(', '.join([e.text for e in root]))
+        playlist_url = root.text
+        resp = urllib.request.urlopen(playlist_url)
+        playlist_data = resp.read()
+        try:
+            root = json.loads(playlist_data)
+        except json.JSONDecodeError as ex:
+            log(str(ex), xbmc.LOGERROR)
+            return None
+
+        if not "playlist" in root or len(root["playlist"]) == 0:
+            return None
+
+        for video in root["playlist"]:
+            if 'streamUrls' in video and "main" in video["streamUrls"]:
+                url = video["streamUrls"]["main"]
+        if not url:
+            return None
+        try:
+            if urllib.request.urlopen(url).getcode() == 200:
+                self._links()[quality] = url
+        except urllib.error.HTTPError as ex:
+            log("Error getting URL '" + url + "': " + str(ex), xbmc.LOGERROR)
             return None
         return url
 
@@ -330,12 +382,12 @@ def _https_ceska_televize_fetch(url, params):
                "Accept-encoding": "gzip",
                "Connection": "Keep-Alive",
                "User-Agent": "Dalvik/1.6.0 (Linux; U; Android 4.4.4; Nexus 7 Build/KTU84P)"}
-    conn = httplib.HTTPSConnection("www.ceskatelevize.cz")
-    conn.request("POST", url, urllib.urlencode(params), headers)
+    conn = http.client.HTTPSConnection("www.ceskatelevize.cz")
+    conn.request("POST", url, urllib.parse.urlencode(params), headers)
     response = conn.getresponse()
     if response.status == 200:
         if response.getheader('Content-Encoding') == 'gzip':
-            data = gzip.GzipFile(fileobj = StringIO(response.read())).read()
+            data = gzip.GzipFile(fileobj = BytesIO(response.read())).read()
         else:
             data = response.read()
         conn.close()
