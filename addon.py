@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-import httplib
+import http.client
 import json
 import os
 import random
 import sys
 import time
 import traceback
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from collections import defaultdict
 from datetime import datetime, timedelta
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
+import xbmcvfs
 from xbmcplugin import addDirectoryItem
 
 import ivysilani
@@ -35,7 +36,7 @@ if REMOTE_DBG:
 ###############################################################################
 
 params = None
-_addon_ = xbmcaddon.Addon('plugin.video.ivysilani')
+_addon_ = xbmcaddon.Addon('plugin.video.ivysilani.cz')
 _lang_ = _addon_.getLocalizedString
 _scriptname_ = _addon_.getAddonInfo('name')
 _version_ = _addon_.getAddonInfo('version')
@@ -66,7 +67,7 @@ def _exception_log(exc_type, exc_value, exc_traceback):
     logErr(traceback.format_exception(exc_type, exc_value, exc_traceback))
     xbmcgui.Dialog().notification(_scriptname_, _toString(exc_value), xbmcgui.NOTIFICATION_ERROR)
     if not _first_error_:
-        if xbmcgui.Dialog().yesno(_scriptname_, _lang_(30500), _lang_(30501)):
+        if xbmcgui.Dialog().yesno(_scriptname_, _lang_(30500) + "\n" + _lang_(30501)):
             _addon_.setSetting("send_errors", "true")
             _send_errors_ = (_addon_.getSetting('send_errors') == "true")
         _addon_.setSetting("first_error", "true")
@@ -87,7 +88,7 @@ try:
                                   "auto_view_mode": "true",
                                   "send_errors": "false",
                                   "show_subtitles": "false"}
-        for setting in DEFAULT_SETTING_VALUES.keys():
+        for setting in list(DEFAULT_SETTING_VALUES.keys()):
             val = _addon_.getSetting(setting)
             if not val:
                 _addon_.setSetting(setting, DEFAULT_SETTING_VALUES[setting])
@@ -100,11 +101,11 @@ try:
     _send_errors_ = (_addon_.getSetting('send_errors') == "true")
     _auto_view_mode_ = (_addon_.getSetting('auto_view_mode') == "true")
     _show_subtitles_ = (_addon_.getSetting('show_subtitles') == "true")
-    _subtitles_path_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('profile'), "subtitles.str"))
-    _icon_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'icon.png'))
-    _next_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'next.png'))
-    _previous_ = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'previous.png'))
-    _fanArt = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'fanart1.png'))
+    _subtitles_path_ = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('profile'), "subtitles.str"))
+    _icon_ = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'icon.png'))
+    _next_ = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'next.png'))
+    _previous_ = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'previous.png'))
+    _fanArt = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'fanart1.png'))
     _handle_ = int(sys.argv[1])
     _baseurl_ = sys.argv[0]
 
@@ -136,7 +137,7 @@ try:
         listedDir = os.listdir(fanartFolder)
         r = random.randint(0, len(listedDir) - 1)
         selected = os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media', 'fanart', listedDir[r])
-        return xbmc.translatePath(selected)
+        return xbmcvfs.translatePath(selected)
 
 
     def _setViewMode(view_mode):
@@ -179,8 +180,8 @@ try:
             dt = datetime.fromtimestamp(time.mktime(time.strptime(date, "%d. %m. %Y")))
             liVideo['premiered'] = dt.strftime("%Y-%m-%d")
         if image:
-            li.setThumbnailImage(image)
-        li.setIconImage(icon)
+            li.setArt({'thumb': image})
+        li.setArt({'icon': icon})
         li.setInfo("video", liVideo)
         if not fanart:
             fanart = _fanart()
@@ -189,11 +190,11 @@ try:
             url = _baseurl_ + "?episodes=" + ID
         if ID:
             cm = []
-            cm.append((_lang_(30013), "XBMC.Container.Update(" + _baseurl_ + "?play=" + ID + "&skip_auto=1)"))
+            cm.append((_lang_(30013), "Container.Update(" + _baseurl_ + "?play=" + ID + "&skip_auto=1)"))
             if related:
-                cm.append((_lang_(30003), "XBMC.Container.Update(" + _baseurl_ + "?related=" + ID + ")"))
-                cm.append((_lang_(30004), "XBMC.Container.Update(" + _baseurl_ + "?episodes=" + ID + ")"))
-                cm.append((_lang_(30005), "XBMC.Container.Update(" + _baseurl_ + "?bonuses=" + ID + ")"))
+                cm.append((_lang_(30003), "Container.Update(" + _baseurl_ + "?related=" + ID + ")"))
+                cm.append((_lang_(30004), "Container.Update(" + _baseurl_ + "?episodes=" + ID + ")"))
+                cm.append((_lang_(30005), "Container.Update(" + _baseurl_ + "?bonuses=" + ID + ")"))
             li.addContextMenuItems(cm)
         xbmcplugin.addDirectoryItem(handle=_handle_, url=url, listitem=li, isFolder=isFolder)
 
@@ -282,8 +283,8 @@ try:
 
     def playUrl(title, url, image, subtitles=False):
         li = xbmcgui.ListItem(title)
-        li.setThumbnailImage(image)
-        res = urllib.urlopen(url)
+        li.setArt({'thumb': image})
+        res = urllib.request.urlopen(url)
         try:
             url = res.geturl()
         finally:
@@ -297,7 +298,7 @@ try:
 
 
     def playPlayable(playable, skipAutoQuality=False, forceQuality=None):
-        image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
+        image = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
                                                 'logo_' + playable.ID.lower() + '_400x225.png'))
         if isinstance(playable, ivysilani.Programme):
             image = playable.imageURL
@@ -322,7 +323,7 @@ try:
 
 
     def playLiveChannel(liveChannel, skipAutoQuality=False):
-        image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
+        image = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
                                                 'logo_' + liveChannel.ID.lower() + '_400x225.png'))
         if _auto_quality_ and not skipAutoQuality:
             url = autoSelectQuality(liveChannel)
@@ -344,13 +345,13 @@ try:
 
     def listAlphabet():
         for letter in ivysilani.alphabet():
-            addDirectoryItem(letter.title, _baseurl_ + "?letter=" + urllib.quote_plus(_toString(letter.link)))
+            addDirectoryItem(letter.title, _baseurl_ + "?letter=" + urllib.parse.quote_plus(_toString(letter.link)))
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
 
     def listGenres():
         for genre in ivysilani.genres():
-            addDirectoryItem(genre.title, _baseurl_ + "?genre=" + urllib.quote_plus(_toString(genre.link)))
+            addDirectoryItem(genre.title, _baseurl_ + "?genre=" + urllib.parse.quote_plus(_toString(genre.link)))
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
 
@@ -365,7 +366,7 @@ try:
             pretty_date = day_names[dt.weekday()] + " " + dt.strftime("%d.%m.%Y")
             formated_date = dt.strftime("%Y-%m-%d")
             list_item = xbmcgui.ListItem(label=pretty_date)
-            listing.append((_baseurl_ + "?date=" + urllib.quote_plus(formated_date), list_item, True))
+            listing.append((_baseurl_ + "?date=" + urllib.parse.quote_plus(formated_date), list_item, True))
             dt = dt - timedelta(days=1)
         xbmcplugin.addDirectoryItems(_handle_, listing, len(listing))
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
@@ -374,9 +375,9 @@ try:
     def listChannelsForDate(date):
         for channel in ivysilani.LIVE_CHANNELS:
             if channel.permanent:
-                image = xbmc.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
+                image = xbmcvfs.translatePath(os.path.join(_addon_.getAddonInfo('path'), 'resources', 'media',
                                                         'logo_' + channel.ID.lower() + '_400x225.png'))
-                url = _baseurl_ + "?date=" + urllib.quote_plus(date) + "&channel=" + channel.ID
+                url = _baseurl_ + "?date=" + urllib.parse.quote_plus(date) + "&channel=" + channel.ID
                 addDirectoryItem(_toString(channel.title), url, image=image)
         xbmcplugin.endOfDirectory(_handle_, updateListing=False, cacheToDisc=False)
 
@@ -410,8 +411,8 @@ try:
     def _sendError(params, exc_type, exc_value, exc_traceback):
         status = "no status"
         try:
-            conn = httplib.HTTPSConnection('script.google.com')
-            req_data = urllib.urlencode(
+            conn = http.client.HTTPSConnection('script.google.com')
+            req_data = urllib.parse.urlencode(
                 {'addon': _scriptname_, 'version': _version_, 'params': _toString(params), 'type': exc_type,
                  'value': exc_value,
                  'traceback': _toString(traceback.format_exception(exc_type, exc_value, exc_traceback))})
@@ -423,7 +424,7 @@ try:
                 location = resp.getheader('Location')
                 o = urlparse(location, allow_fragments=True)
                 host = o.netloc
-                conn = httplib.HTTPSConnection(host)
+                conn = http.client.HTTPSConnection(host)
                 url = o.path + "?" + o.query
                 conn.request(method='GET', url=url)
                 resp = conn.getresponse()
@@ -462,7 +463,7 @@ try:
     def assign_params(params):
         for param in params:
             try:
-                globals()[param] = urllib.unquote_plus(params[param])
+                globals()[param] = urllib.parse.unquote_plus(params[param])
             except:
                 pass
 
@@ -544,7 +545,7 @@ try:
         logErr(traceback.format_exception(exc_type, exc_value, exc_traceback))
         found = False
         for wnm in well_known_error_messages:
-            if ex.message == wnm[0]:
+            if str(ex) == wnm[0]:
                 xbmcgui.Dialog().notification(_scriptname_, _lang_(wnm[1]), xbmcgui.NOTIFICATION_ERROR)
                 found = True
         if not found:
