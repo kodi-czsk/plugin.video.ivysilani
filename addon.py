@@ -169,6 +169,8 @@ try:
                          duration=None,
                          icon=_icon_, image=None, fanart=None, isFolder=True):
         li = xbmcgui.ListItem(label)
+        if (isFolder == False):
+            li.setProperty('IsPlayable','true');
         if not title:
             title = label
         liVideo = {'title': title}
@@ -289,12 +291,10 @@ try:
             url = res.geturl()
         finally:
             res.close()
-        player = xbmc.Player()
-        player.play(url, li)
+        li.setPath(url)
         if subtitles:
-            while not player.isPlaying():
-                xbmc.sleep(2000)
-            player.setSubtitles(_subtitles_path_)
+            li.setSubtitles([_subtitles_path_])
+        xbmcplugin.setResolvedUrl(_handle_, True, li)
 
 
     def playPlayable(playable, skipAutoQuality=False, forceQuality=None):
@@ -400,7 +400,7 @@ try:
             if hasattr(item, "synopsis") and item.synopsis:
                 plot = item.synopsis
             addDirectoryItem(item.title, _baseurl_ + "?play=" + item.ID, ID=item.ID, related=True, plot=plot,
-                             image=item.imageURL)
+                             image=item.imageURL, isFolder=False)
         if len(l) == ivysilani.PAGE_SIZE:
             addDirectoryItem('[B]' + _lang_(30006) + ' >>[/B]',
                              _baseurl_ + "?" + what + "=" + ID + "&page=" + str(page + 1), image=_next_)
